@@ -18,40 +18,40 @@ export default function testInput({
 }) {
   const inputName = Input.name;
 
-  test(`${inputName} calls onChanging followed by onChanged before initial mount`, () => {
+  test(`${inputName} calls onChanging followed by onChange before initial mount`, () => {
     const onChanging = jest.fn();
-    const onChanged = jest.fn();
+    const onChange = jest.fn();
 
-    mount(<Input name="test" onChanging={onChanging} onChanged={onChanged} options={options} {...props} />);
+    mount(<Input name="test" onChanging={onChanging} onChange={onChange} options={options} {...props} />);
 
     expect(onChanging).toHaveBeenCalledTimes(1);
-    expect(onChanged).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledTimes(1);
 
     expect(onChanging).toHaveBeenLastCalledWith(defaultValue);
-    expect(onChanged).toHaveBeenLastCalledWith(defaultValue);
+    expect(onChange).toHaveBeenLastCalledWith(defaultValue);
   });
 
-  test(`${inputName} calls onChanging and onChanged`, () => {
+  test(`${inputName} calls onChanging and onChange`, () => {
     const onChanging = jest.fn();
-    const onChanged = jest.fn();
+    const onChange = jest.fn();
 
-    const wrapper = mount(<Input name="test" onChanging={onChanging} onChanged={onChanged} options={options} {...props} />);
+    const wrapper = mount(<Input name="test" onChanging={onChanging} onChange={onChange} options={options} {...props} />);
 
     onChanging.mockClear();
-    onChanged.mockClear();
+    onChange.mockClear();
 
     // Inputs need not have a way of "changing" but must call only onChanging
-    // and not onChanged if they do.
+    // and not onChange if they do.
     if (typeof simulateChanging === 'function') {
       simulateChanging(wrapper, exampleValueOne);
       expect(onChanging).toHaveBeenCalledTimes(1);
       expect(onChanging).toHaveBeenLastCalledWith(exampleValueOne);
-      expect(onChanged).toHaveBeenCalledTimes(0);
+      expect(onChange).toHaveBeenCalledTimes(0);
     }
 
     simulateChanged(wrapper, exampleValueOne);
-    expect(onChanged).toHaveBeenCalledTimes(1);
-    expect(onChanged).toHaveBeenLastCalledWith(exampleValueOne);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenLastCalledWith(exampleValueOne);
   });
 
   if (typeof simulateSubmit === 'function') {
@@ -65,21 +65,21 @@ export default function testInput({
     });
   }
 
-  test(`${inputName} calls onChanging followed by onChanged when the value prop changes`, () => {
+  test(`${inputName} calls onChanging followed by onChange when the value prop changes`, () => {
     const onChanging = jest.fn();
-    const onChanged = jest.fn();
+    const onChange = jest.fn();
 
-    const wrapper = mount(<Input name="test" onChanging={onChanging} onChanged={onChanged} value={exampleValueOne} options={options} {...props} />);
+    const wrapper = mount(<Input name="test" onChanging={onChanging} onChange={onChange} value={exampleValueOne} options={options} {...props} />);
 
     wrapper.setProps({ value: exampleValueTwo });
 
     expect(onChanging).toHaveBeenCalledTimes(2);
-    expect(onChanged).toHaveBeenCalledTimes(2);
+    expect(onChange).toHaveBeenCalledTimes(2);
 
     expect(onChanging.mock.calls[0][0]).toEqual(exampleValueOne);
-    expect(onChanged.mock.calls[0][0]).toEqual(exampleValueOne);
+    expect(onChange.mock.calls[0][0]).toEqual(exampleValueOne);
     expect(onChanging.mock.calls[1][0]).toEqual(exampleValueTwo);
-    expect(onChanged.mock.calls[1][0]).toEqual(exampleValueTwo);
+    expect(onChange.mock.calls[1][0]).toEqual(exampleValueTwo);
   });
 
   test(`${inputName} getValue`, () => {
@@ -105,47 +105,47 @@ export default function testInput({
     expect(wrapper.instance().isDirty()).toBe(true);
   });
 
-  test(`${inputName} resetValue works and calls onChanging and onChanged`, () => {
+  test(`${inputName} resetValue works and calls onChanging and onChange`, () => {
     const onChanging = jest.fn();
-    const onChanged = jest.fn();
+    const onChange = jest.fn();
 
-    const wrapper = mount(<Input name="test" onChanging={onChanging} onChanged={onChanged} value={exampleValueOne} options={options} {...props} />);
+    const wrapper = mount(<Input name="test" onChanging={onChanging} onChange={onChange} value={exampleValueOne} options={options} {...props} />);
     expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
 
     simulateChanged(wrapper, exampleValueTwo);
     expect(wrapper.instance().getValue()).toEqual(exampleValueTwo);
 
     onChanging.mockClear();
-    onChanged.mockClear();
+    onChange.mockClear();
 
     wrapper.instance().resetValue();
     expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
 
     expect(onChanging).toHaveBeenCalledTimes(1);
-    expect(onChanged).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledTimes(1);
 
     expect(onChanging).toHaveBeenLastCalledWith(exampleValueOne);
-    expect(onChanged).toHaveBeenLastCalledWith(exampleValueOne);
+    expect(onChange).toHaveBeenLastCalledWith(exampleValueOne);
   });
 
-  test(`${inputName} setValue works and calls onChanging and onChanged`, () => {
+  test(`${inputName} setValue works and calls onChanging and onChange`, () => {
     const onChanging = jest.fn();
-    const onChanged = jest.fn();
+    const onChange = jest.fn();
 
-    const wrapper = mount(<Input name="test" onChanging={onChanging} onChanged={onChanged} value={exampleValueOne} options={options} {...props} />);
+    const wrapper = mount(<Input name="test" onChanging={onChanging} onChange={onChange} value={exampleValueOne} options={options} {...props} />);
     expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
 
     onChanging.mockClear();
-    onChanged.mockClear();
+    onChange.mockClear();
 
     wrapper.instance().setValue(exampleValueTwo);
     expect(wrapper.instance().getValue()).toEqual(exampleValueTwo);
     expect(wrapper.instance().isDirty()).toBe(true);
 
     expect(onChanging).toHaveBeenCalledTimes(1);
-    expect(onChanged).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledTimes(1);
 
     expect(onChanging).toHaveBeenLastCalledWith(exampleValueTwo);
-    expect(onChanged).toHaveBeenLastCalledWith(exampleValueTwo);
+    expect(onChange).toHaveBeenLastCalledWith(exampleValueTwo);
   });
 }

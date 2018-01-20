@@ -36,7 +36,7 @@ testInput({
 | options          | OPTIONAL. If your input takes options, the options array.                                                                    |
 | props            | OPTIONAL. A props object that should be used as props on the input for all tests                                             |
 | simulateChanging | OPTIONAL. If your input ever calls `onChanging`, use this function to simulate one user action that will cause it to happen. |
-| simulateChanged  | REQUIRED. Use this function to simulate one user action that will cause `onChanged` to be called.                            |
+| simulateChanged  | REQUIRED. Use this function to simulate one user action that will cause `onChange` to be called.                            |
 | simulateSubmit   | OPTIONAL. If your input ever calls `onSubmit`, use this function to simulate one user action that will cause it to happen.   |
 
 ### Basic Input Example
