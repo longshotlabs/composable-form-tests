@@ -84,6 +84,13 @@ export default function testInput({
 
   test(`${inputName} getValue`, () => {
     const wrapper = mount(<Input name="test" value={exampleValueOne} options={options} {...props} />);
+
+    // Inputs can optionally have an getValue method
+    if (typeof wrapper.instance().getValue !== 'function') {
+      expect(true).toBe(true);
+      return;
+    }
+
     expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
 
     wrapper.setProps({ value: exampleValueTwo });
@@ -95,6 +102,13 @@ export default function testInput({
 
   test(`${inputName} isDirty`, () => {
     const wrapper = mount(<Input name="test" value={exampleValueOne} options={options} {...props} />);
+
+    // Inputs can optionally have an isDirty method
+    if (typeof wrapper.instance().isDirty !== 'function') {
+      expect(true).toBe(true);
+      return;
+    }
+
     expect(wrapper.instance().isDirty()).toBe(false);
 
     // Should only be true if changed by user rather than by prop
@@ -110,6 +124,14 @@ export default function testInput({
     const onChange = jest.fn();
 
     const wrapper = mount(<Input name="test" onChanging={onChanging} onChange={onChange} value={exampleValueOne} options={options} {...props} />);
+
+    // Inputs can optionally have an getValue and resetValue methods
+    if (typeof wrapper.instance().getValue !== 'function' ||
+      typeof wrapper.instance().resetValue !== 'function') {
+        expect(true).toBe(true);
+        return;
+    }
+
     expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
 
     simulateChanged(wrapper, exampleValueTwo);
@@ -133,6 +155,14 @@ export default function testInput({
     const onChange = jest.fn();
 
     const wrapper = mount(<Input name="test" onChanging={onChanging} onChange={onChange} value={exampleValueOne} options={options} {...props} />);
+
+    // Inputs can optionally have getValue and setValue methods
+    if (typeof wrapper.instance().getValue !== 'function' ||
+      typeof wrapper.instance().setValue !== 'function') {
+        expect(true).toBe(true);
+        return;
+    }
+
     expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
 
     onChanging.mockClear();
@@ -140,7 +170,11 @@ export default function testInput({
 
     wrapper.instance().setValue(exampleValueTwo);
     expect(wrapper.instance().getValue()).toEqual(exampleValueTwo);
-    expect(wrapper.instance().isDirty()).toBe(true);
+
+    // Inputs can optionally have an isDirty method
+    if (typeof wrapper.instance().isDirty === 'function') {
+      expect(wrapper.instance().isDirty()).toBe(true);
+    }
 
     expect(onChanging).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledTimes(1);
