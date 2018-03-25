@@ -1,6 +1,6 @@
 {
   "name": "composable-form-tests",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Tests for Composable Form Spec components written in React",
   "author": "Dairy State Designs (http://dairystatedesigns.com/)",
   "license": "MIT",
