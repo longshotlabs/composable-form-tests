@@ -22,6 +22,14 @@ export default function testInput({
     expect(Input.isFormInput).toBe(true);
   });
 
+  test(`${inputName} must not set a default value for "value" prop`, () => {
+    expect(Input.defaultProps && Input.defaultProps.value).toBe(undefined);
+  });
+
+  test(`${inputName} must not set a default value for "errors" prop`, () => {
+    expect(Input.defaultProps && Input.defaultProps.errors).toBe(undefined);
+  });
+
   test(`${inputName} calls onChanging followed by onChange before initial mount`, () => {
     const onChanging = jest.fn();
     const onChange = jest.fn();
