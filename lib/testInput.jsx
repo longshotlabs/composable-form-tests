@@ -18,6 +18,10 @@ export default function testInput({
 }) {
   const inputName = Input.name;
 
+  test(`${inputName} has isFormInput static property`, () => {
+    expect(Input.isFormInput).toBe(true);
+  });
+
   test(`${inputName} calls onChanging followed by onChange before initial mount`, () => {
     const onChanging = jest.fn();
     const onChange = jest.fn();
@@ -126,10 +130,9 @@ export default function testInput({
     const wrapper = mount(<Input name="test" onChanging={onChanging} onChange={onChange} value={exampleValueOne} options={options} {...props} />);
 
     // Inputs can optionally have an getValue and resetValue methods
-    if (typeof wrapper.instance().getValue !== 'function' ||
-      typeof wrapper.instance().resetValue !== 'function') {
-        expect(true).toBe(true);
-        return;
+    if (typeof wrapper.instance().getValue !== 'function' || typeof wrapper.instance().resetValue !== 'function') {
+      expect(true).toBe(true);
+      return;
     }
 
     expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
@@ -157,10 +160,9 @@ export default function testInput({
     const wrapper = mount(<Input name="test" onChanging={onChanging} onChange={onChange} value={exampleValueOne} options={options} {...props} />);
 
     // Inputs can optionally have getValue and setValue methods
-    if (typeof wrapper.instance().getValue !== 'function' ||
-      typeof wrapper.instance().setValue !== 'function') {
-        expect(true).toBe(true);
-        return;
+    if (typeof wrapper.instance().getValue !== 'function' || typeof wrapper.instance().setValue !== 'function') {
+      expect(true).toBe(true);
+      return;
     }
 
     expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
