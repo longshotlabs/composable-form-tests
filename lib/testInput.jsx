@@ -15,6 +15,10 @@ export default function testInput({
   simulateChanging,
   simulateChanged,
   simulateSubmit,
+  testGetValue,
+  testIsDirty,
+  testResetValue,
+  testSetValue,
 }) {
   const inputName = Input.name;
 
@@ -66,17 +70,6 @@ export default function testInput({
     expect(onChange).toHaveBeenLastCalledWith(exampleValueOne);
   });
 
-  if (typeof simulateSubmit === 'function') {
-    test(`${inputName} calls onSubmit`, () => {
-      const onSubmit = jest.fn();
-
-      const wrapper = mount(<Input name="test" onSubmit={onSubmit} options={options} {...props} />);
-      simulateSubmit(wrapper);
-
-      expect(onSubmit).toHaveBeenCalledTimes(1);
-    });
-  }
-
   test(`${inputName} calls onChanging followed by onChange when the value prop changes`, () => {
     const onChanging = jest.fn();
     const onChange = jest.fn();
@@ -94,102 +87,121 @@ export default function testInput({
     expect(onChange.mock.calls[1][0]).toEqual(exampleValueTwo);
   });
 
-  test(`${inputName} getValue`, () => {
-    const wrapper = mount(<Input name="test" value={exampleValueOne} options={options} {...props} />);
+  if (typeof simulateSubmit === 'function') {
+    test(`${inputName} calls onSubmit`, () => {
+      const onSubmit = jest.fn();
 
-    // Inputs can optionally have an getValue method
-    if (typeof wrapper.instance().getValue !== 'function') {
-      expect(true).toBe(true);
-      return;
-    }
+      const wrapper = mount(<Input name="test" onSubmit={onSubmit} options={options} {...props} />);
+      simulateSubmit(wrapper);
 
-    expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+    });
+  }
 
-    wrapper.setProps({ value: exampleValueTwo });
-    expect(wrapper.instance().getValue()).toEqual(exampleValueTwo);
+  if (testGetValue === true) {
+    test(`${inputName} getValue`, () => {
+      const wrapper = mount(<Input name="test" value={exampleValueOne} options={options} {...props} />);
 
-    simulateChanged(wrapper, exampleValueOne);
-    expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
-  });
+      // Inputs can optionally have an getValue method
+      if (typeof wrapper.instance().getValue !== 'function') {
+        expect(true).toBe(true);
+        return;
+      }
 
-  test(`${inputName} isDirty`, () => {
-    const wrapper = mount(<Input name="test" value={exampleValueOne} options={options} {...props} />);
+      expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
 
-    // Inputs can optionally have an isDirty method
-    if (typeof wrapper.instance().isDirty !== 'function') {
-      expect(true).toBe(true);
-      return;
-    }
+      wrapper.setProps({ value: exampleValueTwo });
+      expect(wrapper.instance().getValue()).toEqual(exampleValueTwo);
 
-    expect(wrapper.instance().isDirty()).toBe(false);
+      simulateChanged(wrapper, exampleValueOne);
+      expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
+    });
+  }
 
-    // Should only be true if changed by user rather than by prop
-    wrapper.setProps({ value: exampleValueTwo });
-    expect(wrapper.instance().isDirty()).toBe(false);
+  if (testIsDirty === true) {
+    test(`${inputName} isDirty`, () => {
+      const wrapper = mount(<Input name="test" value={exampleValueOne} options={options} {...props} />);
 
-    simulateChanged(wrapper, exampleValueOne);
-    expect(wrapper.instance().isDirty()).toBe(true);
-  });
+      // Inputs can optionally have an isDirty method
+      if (typeof wrapper.instance().isDirty !== 'function') {
+        expect(true).toBe(true);
+        return;
+      }
 
-  test(`${inputName} resetValue works and calls onChanging and onChange`, () => {
-    const onChanging = jest.fn();
-    const onChange = jest.fn();
+      expect(wrapper.instance().isDirty()).toBe(false);
 
-    const wrapper = mount(<Input name="test" onChanging={onChanging} onChange={onChange} value={exampleValueOne} options={options} {...props} />);
+      // Should only be true if changed by user rather than by prop
+      wrapper.setProps({ value: exampleValueTwo });
+      expect(wrapper.instance().isDirty()).toBe(false);
 
-    // Inputs can optionally have an getValue and resetValue methods
-    if (typeof wrapper.instance().getValue !== 'function' || typeof wrapper.instance().resetValue !== 'function') {
-      expect(true).toBe(true);
-      return;
-    }
-
-    expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
-
-    simulateChanged(wrapper, exampleValueTwo);
-    expect(wrapper.instance().getValue()).toEqual(exampleValueTwo);
-
-    onChanging.mockClear();
-    onChange.mockClear();
-
-    wrapper.instance().resetValue();
-    expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
-
-    expect(onChanging).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenCalledTimes(1);
-
-    expect(onChanging).toHaveBeenLastCalledWith(exampleValueOne);
-    expect(onChange).toHaveBeenLastCalledWith(exampleValueOne);
-  });
-
-  test(`${inputName} setValue works and calls onChanging and onChange`, () => {
-    const onChanging = jest.fn();
-    const onChange = jest.fn();
-
-    const wrapper = mount(<Input name="test" onChanging={onChanging} onChange={onChange} value={exampleValueOne} options={options} {...props} />);
-
-    // Inputs can optionally have getValue and setValue methods
-    if (typeof wrapper.instance().getValue !== 'function' || typeof wrapper.instance().setValue !== 'function') {
-      expect(true).toBe(true);
-      return;
-    }
-
-    expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
-
-    onChanging.mockClear();
-    onChange.mockClear();
-
-    wrapper.instance().setValue(exampleValueTwo);
-    expect(wrapper.instance().getValue()).toEqual(exampleValueTwo);
-
-    // Inputs can optionally have an isDirty method
-    if (typeof wrapper.instance().isDirty === 'function') {
+      simulateChanged(wrapper, exampleValueOne);
       expect(wrapper.instance().isDirty()).toBe(true);
-    }
+    });
+  }
 
-    expect(onChanging).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenCalledTimes(1);
+  if (testResetValue === true) {
+    test(`${inputName} resetValue works and calls onChanging and onChange`, () => {
+      const onChanging = jest.fn();
+      const onChange = jest.fn();
 
-    expect(onChanging).toHaveBeenLastCalledWith(exampleValueTwo);
-    expect(onChange).toHaveBeenLastCalledWith(exampleValueTwo);
-  });
+      const wrapper = mount(<Input name="test" onChanging={onChanging} onChange={onChange} value={exampleValueOne} options={options} {...props} />);
+
+      // Inputs can optionally have an getValue and resetValue methods
+      if (typeof wrapper.instance().getValue !== 'function' || typeof wrapper.instance().resetValue !== 'function') {
+        expect(true).toBe(true);
+        return;
+      }
+
+      expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
+
+      simulateChanged(wrapper, exampleValueTwo);
+      expect(wrapper.instance().getValue()).toEqual(exampleValueTwo);
+
+      onChanging.mockClear();
+      onChange.mockClear();
+
+      wrapper.instance().resetValue();
+      expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
+
+      expect(onChanging).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
+
+      expect(onChanging).toHaveBeenLastCalledWith(exampleValueOne);
+      expect(onChange).toHaveBeenLastCalledWith(exampleValueOne);
+    });
+  }
+
+  if (testSetValue === true) {
+    test(`${inputName} setValue works and calls onChanging and onChange`, () => {
+      const onChanging = jest.fn();
+      const onChange = jest.fn();
+
+      const wrapper = mount(<Input name="test" onChanging={onChanging} onChange={onChange} value={exampleValueOne} options={options} {...props} />);
+
+      // Inputs can optionally have getValue and setValue methods
+      if (typeof wrapper.instance().getValue !== 'function' || typeof wrapper.instance().setValue !== 'function') {
+        expect(true).toBe(true);
+        return;
+      }
+
+      expect(wrapper.instance().getValue()).toEqual(exampleValueOne);
+
+      onChanging.mockClear();
+      onChange.mockClear();
+
+      wrapper.instance().setValue(exampleValueTwo);
+      expect(wrapper.instance().getValue()).toEqual(exampleValueTwo);
+
+      // Inputs can optionally have an isDirty method
+      if (typeof wrapper.instance().isDirty === 'function') {
+        expect(wrapper.instance().isDirty()).toBe(true);
+      }
+
+      expect(onChanging).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
+
+      expect(onChanging).toHaveBeenLastCalledWith(exampleValueTwo);
+      expect(onChange).toHaveBeenLastCalledWith(exampleValueTwo);
+    });
+  }
 }
